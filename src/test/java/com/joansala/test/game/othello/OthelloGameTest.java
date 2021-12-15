@@ -1,8 +1,8 @@
-package com.joansala.game.othello;
+package com.joansala.test.game.othello;
 
 import org.junit.jupiter.api.*;
 import com.joansala.engine.Game;
-import com.joansala.engine.GameContract;
+import com.joansala.test.engine.GameContract;
 import com.joansala.game.othello.OthelloGame;
 
 
