@@ -28,7 +28,7 @@ import static com.joansala.game.othello.OthelloGame.*;
 
 
 /**
- * Represents a othello board.
+ * Represents an Othello board.
  */
 public class OthelloBoard extends BaseBoard<long[]> {
 

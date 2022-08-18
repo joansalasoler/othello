@@ -55,7 +55,7 @@ final class Othello {
     /** Number of columns on the board */
     static final int BOARD_FILES = 8;
 
-    /** Number of distinc stones */
+    /** Number of distinct stones */
     static final int PIECE_COUNT = 2;
 
     // -------------------------------------------------------------------
@@ -84,6 +84,10 @@ final class Othello {
     // -------------------------------------------------------------------
     // Bitboard masks
     // -------------------------------------------------------------------
+
+    /** Board weights evaluation mask */
+    static final long WEIGHTS_MASK =
+        0XFFE7C38181C3E7FFL;
 
     /** Direction shifts */
     static final int[] DIRECTION_SHIFT = {
@@ -114,6 +118,22 @@ final class Othello {
     static final long[] HASH_SIGN = {
         0x506AACF489889342L, // South sign
         0xD2B7ADEEDED1F73FL  // North sign
+    };
+
+    // -------------------------------------------------------------------
+    // Heuristic evaluation weights
+    // -------------------------------------------------------------------
+
+    /** Weight of each owned board checker */
+    static final int[] CHECKER_WEIGHTS = {
+        90,  34, 18, 17, 17, 18,  34, 90,
+        34, -15, -3,  0,  0, -3, -15, 34,
+        18,  -3,  0,  0,  0,  0,  -3, 18,
+        17,   0,  0,  0,  0,  0,   0, 17,
+        17,   0,  0,  0,  0,  0,   0, 17,
+        18,  -3,  0,  0,  0,  0,  -3, 18,
+        34, -15, -3,  0,  0, -3, -15, 34,
+        90,  34, 18, 17, 17, 18,  34, 90
     };
 
     // -------------------------------------------------------------------

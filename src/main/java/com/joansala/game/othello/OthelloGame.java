@@ -26,14 +26,14 @@ import static com.joansala.game.othello.Othello.*;
 
 
 /**
- * Reperesents a Othello game between two players.
+ * Represents an Othello game between two players.
  */
 public class OthelloGame extends BaseGame {
 
     /** Recommended score to evaluate draws */
     public static final int CONTEMPT_SCORE = 0;
 
-    /** Player fortfeits its turn */
+    /** Player forfeits its turn */
     public static final int FORFEIT_MOVE = BOARD_SIZE;
 
     /** Capacity of this game object */
@@ -217,7 +217,25 @@ public class OthelloGame extends BaseGame {
      */
     @Override
     public int score() {
-        return 0;
+        int score = 0;
+
+        long south = WEIGHTS_MASK & state[SOUTH_STONE];
+
+        while (empty(south) == false) {
+            final int checker = first(south);
+            score += CHECKER_WEIGHTS[checker];
+            south ^= bit(checker);
+        }
+
+        long north = WEIGHTS_MASK & state[NORTH_STONE];
+
+        while (empty(north) == false) {
+            final int checker = first(north);
+            score -= CHECKER_WEIGHTS[checker];
+            north ^= bit(checker);
+        }
+
+        return score;
     }
 
 
@@ -470,5 +488,14 @@ public class OthelloGame extends BaseGame {
         final int n = DIRECTION_SHIFT[direction];
         final long mask = DIRECTION_MASK[direction];
         return mask & shift(bitboard, n);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void ensureCapacity(int size) {
+        // Capacity is fixed for this game
     }
 }
