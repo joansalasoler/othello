@@ -20,18 +20,26 @@ package com.joansala.game.othello;
 
 
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import com.google.inject.Provides;
 
 import com.joansala.cli.*;
 import com.joansala.engine.*;
 import com.joansala.cache.GameCache;
 import com.joansala.engine.base.BaseModule;
 import com.joansala.engine.negamax.Negamax;
+import com.joansala.book.base.BaseRoots;
+import static com.joansala.game.othello.Othello.*;
 
 
 /**
  * Binds together the components of the Othello engine.
  */
 public class OthelloModule extends BaseModule {
+
+    /** Shared openings book instance */
+    private static Roots<Game> roots;
+
 
     /**
      * Command line interface.
@@ -41,7 +49,17 @@ public class OthelloModule extends BaseModule {
       version = "1.0.0",
       description = "Othello is a strategy board game"
     )
-    private static class OthelloCommand extends MainCommand {}
+    private static class OthelloCommand extends MainCommand {
+
+        @Option(names = "--roots", description = "Openings book path")
+        private static String roots = OthelloRoots.ROOTS_PATH;
+
+        @Option(names = "--disturbance", description = "disturbance")
+        private static double disturbance = ROOT_DISTURBANCE;
+
+        @Option(names = "--threshold", description = "threshold")
+        private static double threshold = ROOT_THRESHOLD;
+    }
 
 
     /**
@@ -52,6 +70,29 @@ public class OthelloModule extends BaseModule {
         bind(Board.class).to(OthelloBoard.class);
         bind(Engine.class).to(Negamax.class);
         bind(Cache.class).to(GameCache.class);
+    }
+
+
+    /**
+     * Openings book provider.
+     */
+    @Provides @SuppressWarnings("rawtypes")
+    public static Roots provideRoots() {
+        if (roots instanceof Roots == false) {
+            String path = OthelloCommand.roots;
+
+            try {
+                OthelloRoots roots = new OthelloRoots(path);
+                roots.setDisturbance(OthelloCommand.disturbance);
+                roots.setThreshold(OthelloCommand.threshold);
+                OthelloModule.roots = roots;
+            } catch (Exception e) {
+                logger.warning("Cannot open openings book: " + path);
+                roots = new BaseRoots();
+            }
+        }
+
+        return roots;
     }
 
 
