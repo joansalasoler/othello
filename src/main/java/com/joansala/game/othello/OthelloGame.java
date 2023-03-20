@@ -448,10 +448,11 @@ public class OthelloGame extends BaseGame {
     private void popState(int index) {
         System.arraycopy(states, index << 1, state, 0, PIECE_COUNT);
         setTurn(turns[index]);
+        move = moves[index];
+        hash = hashes[index];
         cursor = cursors[index];
         mobility = mobilities[index];
-        hash = hashes[index];
-        move = moves[index];
+        stagnant = empty(mobility);
     }
 
 
