@@ -30,7 +30,7 @@ import static com.joansala.game.othello.OthelloGame.*;
 public class OthelloRoots extends UCTRoots {
 
     /** Default path of the book database */
-    public static final String ROOTS_PATH = "/othello-roots.bin";
+    public static final String ROOTS_PATH = "othello-roots.bin";
 
 
     /**
@@ -47,17 +47,9 @@ public class OthelloRoots extends UCTRoots {
      * @param path      Database path
      */
     public OthelloRoots(String path) throws IOException {
-        super(getResourcePath(path));
+        super(path);
         setDisturbance(ROOT_DISTURBANCE);
         setThreshold(ROOT_THRESHOLD);
         setInfinity(MAX_SCORE);
-    }
-
-
-    /**
-     * Obtain a path to the given resource file.
-     */
-    private static String getResourcePath(String path) {
-        return OthelloRoots.class.getResource(path).getFile();
     }
 }
