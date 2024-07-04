@@ -65,6 +65,12 @@ public class OthelloModule extends BaseModule {
           description = "Openings book root threshold"
         )
         private static double threshold = ROOT_THRESHOLD;
+
+        @Option(
+          names = "--cache-size",
+          description = "Default hash table size (bytes)"
+        )
+        private static long cacheSize = GameCache.DEFAULT_SIZE;
     }
 
 
@@ -75,7 +81,15 @@ public class OthelloModule extends BaseModule {
         bind(Game.class).to(OthelloGame.class);
         bind(Board.class).to(OthelloBoard.class);
         bind(Engine.class).to(Negamax.class);
-        bind(Cache.class).to(GameCache.class);
+    }
+
+
+    /**
+     * Transpositions table provider.
+     */
+    @Provides @Singleton @SuppressWarnings("rawtypes")
+    public static Cache provideCache() {
+        return new GameCache(OthelloCommand.cacheSize);
     }
 
 
