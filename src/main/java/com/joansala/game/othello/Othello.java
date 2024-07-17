@@ -40,54 +40,50 @@ package com.joansala.game.othello;
  * | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
  * +---+---+---+---+---+---+---+---+
  */
-final class Othello {
+public final class Othello {
 
     // -------------------------------------------------------------------
     // Game logic constants
     // -------------------------------------------------------------------
 
     /** Number of checkers on the board */
-    static final int BOARD_SIZE = 64;
+    public static final int BOARD_SIZE = 64;
 
     /** Number of rows on the board */
-    static final int BOARD_RANKS = 8;
+    public static final int BOARD_RANKS = 8;
 
     /** Number of columns on the board */
-    static final int BOARD_FILES = 8;
+    public static final int BOARD_FILES = 8;
 
     /** Number of distinct stones */
-    static final int PIECE_COUNT = 2;
+    public static final int PIECE_COUNT = 2;
 
     // -------------------------------------------------------------------
     // Board representation
     // -------------------------------------------------------------------
 
     /** South player name */
-    static final String SOUTH_NAME = "Black";
+    public static final String SOUTH_NAME = "Black";
 
     /** North player name */
-    static final String NORTH_NAME = "White";
+    public static final String NORTH_NAME = "White";
 
     /** South player symbol */
-    static final char SOUTH_SYMBOL = 'b';
+    public static final char SOUTH_SYMBOL = 'b';
 
     /** North player symbol */
-    static final char NORTH_SYMBOL = 'w';
+    public static final char NORTH_SYMBOL = 'w';
 
     // -------------------------------------------------------------------
     // Piece indices
     // -------------------------------------------------------------------
 
-    static final int SOUTH_STONE =  0;
-    static final int NORTH_STONE =  1;
+    public static final int SOUTH_STONE =  0;
+    public static final int NORTH_STONE =  1;
 
     // -------------------------------------------------------------------
     // Bitboard masks
     // -------------------------------------------------------------------
-
-    /** Board weights evaluation mask */
-    static final long WEIGHTS_MASK =
-        0XFFE7C38181C3E7FFL;
 
     /** Direction shifts */
     static final int[] DIRECTION_SHIFT = {
@@ -121,30 +117,14 @@ final class Othello {
     };
 
     // -------------------------------------------------------------------
-    // Heuristic evaluation weights
-    // -------------------------------------------------------------------
-
-    /** Weight of each owned board checker */
-    static final int[] CHECKER_WEIGHTS = {
-        90,  34, 18, 17, 17, 18,  34, 90,
-        34, -15, -3,  0,  0, -3, -15, 34,
-        18,  -3,  0,  0,  0,  0,  -3, 18,
-        17,   0,  0,  0,  0,  0,   0, 17,
-        17,   0,  0,  0,  0,  0,   0, 17,
-        18,  -3,  0,  0,  0,  0,  -3, 18,
-        34, -15, -3,  0,  0, -3, -15, 34,
-        90,  34, 18, 17, 17, 18,  34, 90
-    };
-
-    // -------------------------------------------------------------------
     // Openings book
     // -------------------------------------------------------------------
 
     /** Minimum score for an opening move to be chosen */
-    static final double ROOT_THRESHOLD = -46.5D;
+    public static final double ROOT_THRESHOLD = -46.5D;
 
     /** Threshold on the highest opening move reward */
-    static final double ROOT_DISTURBANCE = 46.5D;
+    public static final double ROOT_DISTURBANCE = 46.5D;
 
     // -------------------------------------------------------------------
     // Board definitions

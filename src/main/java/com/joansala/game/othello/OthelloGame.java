@@ -19,7 +19,9 @@ package com.joansala.game.othello;
  */
 
 import com.joansala.engine.Board;
+import com.joansala.engine.Scorer;
 import com.joansala.engine.base.BaseGame;
+import com.joansala.game.othello.scorers.MaterialScorer;
 import com.joansala.util.hash.ZobristHash;
 import static com.joansala.util.bits.Bits.*;
 import static com.joansala.game.othello.Othello.*;
@@ -38,6 +40,9 @@ public class OthelloGame extends BaseGame {
 
     /** Capacity of this game object */
     private static final int CAPACITY = 2 * BOARD_SIZE;
+
+    /** Heuristic evaluation function */
+    private static final Scorer<OthelloGame> scorer = scoreFunction();
 
     /** Hash code generator */
     private static final ZobristHash hasher = hashFunction();
@@ -90,6 +95,14 @@ public class OthelloGame extends BaseGame {
         mobilities = new long[CAPACITY];
         states = new long[CAPACITY << 1];
         setBoard(new OthelloBoard());
+    }
+
+
+    /**
+     * Initialize the heuristic evaluation function.
+     */
+    private static Scorer<OthelloGame> scoreFunction() {
+        return new MaterialScorer();
     }
 
 
@@ -164,11 +177,22 @@ public class OthelloGame extends BaseGame {
 
 
     /**
-     * {@inheritDoc}
+     * Obtain the current bitboard value on the given index.
+     *
+     * @return      Bitboard value
      */
-    @Override
-    public boolean isLegal(int move) {
-        return contains(mobility, bit(move)) || move == FORFEIT_MOVE;
+    public final long state(int index) {
+        return state[index];
+    }
+
+
+    /**
+     * Current game state reference.
+     *
+     * @return      A game state
+     */
+    protected long[] state() {
+        return state;
     }
 
 
@@ -178,6 +202,15 @@ public class OthelloGame extends BaseGame {
     @Override
     public int contempt() {
         return CONTEMPT_SCORE;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isLegal(int move) {
+        return contains(mobility, bit(move)) || move == FORFEIT_MOVE;
     }
 
 
@@ -217,25 +250,7 @@ public class OthelloGame extends BaseGame {
      */
     @Override
     public int score() {
-        int score = 0;
-
-        long south = WEIGHTS_MASK & state[SOUTH_STONE];
-
-        while (empty(south) == false) {
-            final int checker = first(south);
-            score += CHECKER_WEIGHTS[checker];
-            south ^= bit(checker);
-        }
-
-        long north = WEIGHTS_MASK & state[NORTH_STONE];
-
-        while (empty(north) == false) {
-            final int checker = first(north);
-            score -= CHECKER_WEIGHTS[checker];
-            north ^= bit(checker);
-        }
-
-        return score;
+        return scorer.evaluate(this);
     }
 
 
