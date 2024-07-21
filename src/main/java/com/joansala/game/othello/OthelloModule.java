@@ -87,7 +87,7 @@ public class OthelloModule extends BaseModule {
     /**
      * Transpositions table provider.
      */
-    @Provides @Singleton @SuppressWarnings("rawtypes")
+    @Provides @SuppressWarnings("rawtypes")
     public static Cache provideCache() {
         return new GameCache(OthelloCommand.cacheSize);
     }
@@ -96,7 +96,7 @@ public class OthelloModule extends BaseModule {
     /**
      * Openings book provider.
      */
-    @Provides @Singleton @SuppressWarnings("rawtypes")
+    @Provides @SuppressWarnings("rawtypes")
     public static Roots provideRoots() {
         String path = OthelloCommand.roots;
 
