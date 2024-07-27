@@ -21,7 +21,7 @@ package com.joansala.game.othello;
 import com.joansala.engine.Board;
 import com.joansala.engine.Scorer;
 import com.joansala.engine.base.BaseGame;
-import com.joansala.game.othello.scorers.MaterialScorer;
+import com.joansala.game.othello.scorers.CornersScorer;
 import com.joansala.util.hash.ZobristHash;
 import static com.joansala.util.bits.Bits.*;
 import static com.joansala.game.othello.Othello.*;
@@ -102,7 +102,7 @@ public class OthelloGame extends BaseGame {
      * Initialize the heuristic evaluation function.
      */
     private static Scorer<OthelloGame> scoreFunction() {
-        return new MaterialScorer();
+        return new CornersScorer();
     }
 
 
@@ -219,7 +219,7 @@ public class OthelloGame extends BaseGame {
      */
     @Override
     public int toCentiPawns(int score) {
-        return (int) (6.4 * score);
+        return (int) (score * 100.0 / STONE_SCORE);
     }
 
 

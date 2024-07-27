@@ -86,12 +86,12 @@ public final class Othello {
     // -------------------------------------------------------------------
 
     /** Direction shifts */
-    static final int[] DIRECTION_SHIFT = {
+    public static final int[] DIRECTION_SHIFT = {
         1, 7, 8, 9, 65, 71, 72, 73
     };
 
     /** Direction shift masks */
-    static final long[] DIRECTION_MASK = {
+    public static final long[] DIRECTION_MASK = {
         0xFEFEFEFEFEFEFEFEL, // Left
         0x7F7F7F7F7F7F7F00L, // Top-Right
         0XFFFFFFFFFFFFFF00L, // Top
@@ -115,6 +115,13 @@ public final class Othello {
         0x506AACF489889342L, // South sign
         0xD2B7ADEEDED1F73FL  // North sign
     };
+
+    // -------------------------------------------------------------------
+    // Evaluation scores
+    // -------------------------------------------------------------------
+
+    /** Score of a single stone */
+    public static final int STONE_SCORE = 2;
 
     // -------------------------------------------------------------------
     // Openings book
