@@ -22,13 +22,13 @@ package com.joansala.game.othello;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import com.google.inject.Provides;
-import com.google.inject.Singleton;
-
+import com.google.inject.name.Named;
 import com.joansala.cli.*;
 import com.joansala.engine.*;
 import com.joansala.cache.GameCache;
 import com.joansala.engine.base.BaseModule;
 import com.joansala.engine.negamax.Negamax;
+import com.joansala.engine.uct.UCT;
 import com.joansala.book.base.BaseRoots;
 import static com.joansala.game.othello.Othello.*;
 
@@ -81,6 +81,15 @@ public class OthelloModule extends BaseModule {
         bind(Game.class).to(OthelloGame.class);
         bind(Board.class).to(OthelloBoard.class);
         bind(Engine.class).to(Negamax.class);
+    }
+
+
+    /**
+     * Exploration bias factor for {@link UCT}.
+     */
+    @Provides @Named("BIAS")
+    public static double provideExplorationBias() {
+        return Math.sqrt(2) / 8D;
     }
 
 
