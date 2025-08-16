@@ -127,11 +127,11 @@ public final class Othello {
     // Openings book
     // -------------------------------------------------------------------
 
-    /** Minimum score for an opening move to be chosen */
-    public static final double ROOT_THRESHOLD = -46.5D;
+    /** Never play book moves with a score lower than this */
+    public static final int ROOT_THRESHOLD = -9;
 
-    /** Threshold on the highest opening move reward */
-    public static final double ROOT_DISTURBANCE = 46.5D;
+    /** Play book moves within this range of the best move score */
+    public static final int ROOT_DISTURBANCE = 14;
 
     // -------------------------------------------------------------------
     // Board definitions
