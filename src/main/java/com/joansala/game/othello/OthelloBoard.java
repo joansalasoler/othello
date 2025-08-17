@@ -84,7 +84,7 @@ public class OthelloBoard extends BaseBoard<long[]> {
      * {@inheritDoc}
      */
     @Override
-    public int toMove(String notation) {
+    public int parseCoordinates(String notation) {
         return algebraic.toIndex(notation);
     }
 
@@ -102,7 +102,7 @@ public class OthelloBoard extends BaseBoard<long[]> {
      * {@inheritDoc}
      */
     @Override
-    public OthelloBoard toBoard(String notation) {
+    public OthelloBoard fromDiagram(String notation) {
         String[] fields = notation.split(" ");
 
         long[] position = toPosition(fen.toArray(fields[0]));

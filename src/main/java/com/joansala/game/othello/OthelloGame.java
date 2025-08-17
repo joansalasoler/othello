@@ -94,7 +94,7 @@ public class OthelloGame extends BaseGame {
         hashes = new long[CAPACITY];
         mobilities = new long[CAPACITY];
         states = new long[CAPACITY << 1];
-        setBoard(new OthelloBoard());
+        setStartingBoard(new OthelloBoard());
     }
 
 
@@ -118,7 +118,7 @@ public class OthelloGame extends BaseGame {
      * {@inheritDoc}
      */
     @Override
-    public Board getBoard() {
+    public Board getStartingBoard() {
         return board;
     }
 
@@ -127,15 +127,15 @@ public class OthelloGame extends BaseGame {
      * {@inheritDoc}
      */
     @Override
-    public void setBoard(Board board) {
-        setBoard((OthelloBoard) board);
+    public void setStartingBoard(Board board) {
+        setStartingBoard((OthelloBoard) board);
     }
 
 
     /**
-     * {@see #setBoard(Board)}
+     * {@see #setStartingBoard(Board)}
      */
-    public void setBoard(OthelloBoard board) {
+    public void setStartingBoard(OthelloBoard board) {
         this.index = -1;
         this.board = board;
         this.move = NULL_MOVE;
@@ -171,7 +171,7 @@ public class OthelloGame extends BaseGame {
      * {@inheritDoc}
      */
     @Override
-    public OthelloBoard toBoard() {
+    public OthelloBoard getCurrentBoard() {
         return new OthelloBoard(state, turn);
     }
 
