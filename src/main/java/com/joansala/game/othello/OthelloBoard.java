@@ -19,10 +19,12 @@ package com.joansala.game.othello;
  */
 
 import java.util.StringJoiner;
+
 import com.joansala.engine.base.BaseBoard;
 import com.joansala.util.bits.BitsetConverter;
 import com.joansala.util.notation.CoordinateConverter;
 import com.joansala.util.notation.DiagramConverter;
+
 import static com.joansala.game.othello.Othello.*;
 import static com.joansala.game.othello.OthelloGame.*;
 
@@ -68,6 +70,18 @@ public class OthelloBoard extends BaseBoard<long[]> {
      */
     public OthelloBoard(long[] position, int turn) {
         super(position.clone(), turn);
+    }
+
+
+    /**
+     * Creates a new board instance.
+     *
+     * @param south         South player bitboard
+     * @param north         North player bitboard
+     * @param turn          Player to move
+     */
+    public OthelloBoard(long south, long north, int turn) {
+        super(new long[] { south, north }, turn);
     }
 
 
@@ -173,6 +187,26 @@ public class OthelloBoard extends BaseBoard<long[]> {
      */
     private static int toTurn(char symbol) {
         return symbol == SOUTH_SYMBOL ? SOUTH : NORTH;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public OthelloBoard[] symmetries() {
+        final int size = 2 * SYMMETRY_OPERATIONS.length;
+        final OthelloBoard[] boards = new OthelloBoard[size];
+        int index = 0;
+
+        for (var o : SYMMETRY_OPERATIONS) {
+            long south = o.applyAsLong(position[SOUTH_STONE]);
+            long north = o.applyAsLong(position[NORTH_STONE]);
+            boards[index++] = new OthelloBoard(south, north, turn);
+            boards[index++] = new OthelloBoard(north, south, -turn);
+        }
+
+        return boards;
     }
 
 

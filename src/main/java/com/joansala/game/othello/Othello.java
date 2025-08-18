@@ -1,5 +1,8 @@
 package com.joansala.game.othello;
 
+import java.util.function.LongUnaryOperator;
+import com.joansala.util.bits.Bits;
+
 /*
  * Aalina engine.
  * Copyright (C) 2021-2024 Joan Sala Soler <contact@joansala.com>
@@ -171,5 +174,17 @@ public final class Othello {
     static final long[] START_POSITION = {
         0x0000001008000000L, // South pieces
         0x0000000810000000L, // North pieces
+    };
+
+    /** Bitboard transforms for generating symmetries */
+    static final LongUnaryOperator[] SYMMETRY_OPERATIONS = {
+        Bits::identity,
+        Bits::rotate,
+        Bits::rotate90,
+        Bits::rotate270,
+        Bits::mirrorX,
+        Bits::mirrorY,
+        Bits::transposeYX,
+        Bits::transposeXY
     };
 }
