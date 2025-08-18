@@ -13,7 +13,7 @@ import com.joansala.util.suites.SuiteReader;
 public class OthelloBoardTest implements BoardContract {
 
     /** Test suite file path */
-    private static String SUITE_PATH = "othello-bench.suite";
+    private static String SUITE_PATH = "src/test/resources/othello-bench.suite";
 
 
     /**
