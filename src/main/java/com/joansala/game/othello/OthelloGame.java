@@ -333,11 +333,13 @@ public class OthelloGame extends BaseGame {
             return FORFEIT_MOVE;
         }
 
-        while (cursor >= 0) {
-            if (contains(mobility, bit(cursor))) {
-                return cursor--;
-            } else {
-                cursor--;
+        if (cursor >= 0 && mobility != 0L) {
+            long mask = mobility & ((2L << cursor) - 1);
+
+            if (empty(mask) == false) {
+                final int move = last(mask);
+                cursor = move - 1;
+                return move;
             }
         }
 
