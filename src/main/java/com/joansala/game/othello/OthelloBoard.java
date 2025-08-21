@@ -214,6 +214,16 @@ public class OthelloBoard extends BaseBoard<long[]> {
      * {@inheritDoc}
      */
     @Override
+    public long hash() {
+        int player = (turn == SOUTH) ? SOUTH_STONE : NORTH_STONE;
+        return OthelloGame.computeHash(player, position);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String toString() {
         return String.format((
             "=========( %turn to move )=========%n" +
