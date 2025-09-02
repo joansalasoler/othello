@@ -469,7 +469,7 @@ public class OthelloGame extends BaseGame {
         hash = hashes[index];
         cursor = cursors[index];
         mobility = mobilities[index];
-        stagnant = empty(mobility);
+        stagnant = false;
     }
 
 
