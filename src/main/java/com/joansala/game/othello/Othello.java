@@ -2,6 +2,7 @@ package com.joansala.game.othello;
 
 import java.util.function.LongUnaryOperator;
 import com.joansala.util.bits.Bits;
+import static com.joansala.util.bits.Bits.shift;
 
 /*
  * Aalina engine.
@@ -110,11 +111,11 @@ public final class Othello {
     // -------------------------------------------------------------------
 
     /** Zobrist hashing random seed */
-    static final long RANDOM_SEED =
+    public static final long RANDOM_SEED =
         0x6622E46E1DB096FAL;
 
     /** Zobrist keys for the player to move */
-    static final long[] HASH_SIGN = {
+    public static final long[] HASH_SIGN = {
         0x506AACF489889342L, // South sign
         0xD2B7ADEEDED1F73FL  // North sign
     };
@@ -132,9 +133,6 @@ public final class Othello {
 
     /** Never play book moves with a score lower than this */
     public static final int ROOT_THRESHOLD = -9;
-
-    /** Play book moves within this range of the best move score */
-    public static final int ROOT_DISTURBANCE = 14;
 
     // -------------------------------------------------------------------
     // Board definitions
@@ -187,4 +185,33 @@ public final class Othello {
         Bits::transposeYX,
         Bits::transposeXY
     };
+
+
+    /**
+     * Projects a set of pieces on the given direction.
+     */
+    public static long rays(long pieces, long mask, int direction) {
+        long rays = pieces & shiftd(mask, direction);
+
+        for (int rank = 0; rank < BOARD_RANKS - 3; rank++) {
+            rays |= pieces & shiftd(rays, direction);
+        }
+
+        return rays;
+    }
+
+
+    /**
+     * Shifts a bitboard on the given direction.
+     *
+     * @param bitboard      Bitboard to shift
+     * @param direction     Direction identifier
+     *
+     * @return              Shifted bitboard
+     */
+    public static long shiftd(long bitboard, int direction) {
+        final int n = DIRECTION_SHIFT[direction];
+        final long mask = DIRECTION_MASK[direction];
+        return mask & shift(bitboard, n);
+    }
 }

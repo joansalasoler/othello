@@ -57,12 +57,6 @@ public class OthelloModule extends BaseModule {
         private static String roots = OthelloRoots.ROOTS_PATH;
 
         @Option(
-          names = "--roots-disturbance",
-          description = "Openings book root disturbance"
-        )
-        private static int disturbance = ROOT_DISTURBANCE;
-
-        @Option(
           names = "--roots-threshold",
           description = "Openings book root threshold"
         )
@@ -122,7 +116,6 @@ public class OthelloModule extends BaseModule {
 
         try {
             OthelloRoots roots = new OthelloRoots(path);
-            roots.setDisturbance(OthelloCommand.disturbance);
             roots.setThreshold(OthelloCommand.threshold);
             return roots;
         } catch (Exception e) {

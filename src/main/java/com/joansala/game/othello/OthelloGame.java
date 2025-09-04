@@ -432,20 +432,6 @@ public class OthelloGame extends BaseGame {
 
 
     /**
-     * Projects a set of pieces on the given direction.
-     */
-    private long rays(long pieces, long mask, int direction) {
-        long rays = pieces & shiftd(mask, direction);
-
-        for (int rank = 0; rank < BOARD_RANKS - 3; rank++) {
-            rays |= pieces & shiftd(rays, direction);
-        }
-
-        return rays;
-    }
-
-
-    /**
      * Store game state on the history.
      */
     private void pushState() {
@@ -503,21 +489,6 @@ public class OthelloGame extends BaseGame {
         }
 
         return hash;
-    }
-
-
-    /**
-     * Shifts a bitboard on the given direction.
-     *
-     * @param bitboard      Bitboard to shift
-     * @param direction     Direction identifier
-     *
-     * @return              Shifted bitboard
-     */
-    private long shiftd(long bitboard, int direction) {
-        final int n = DIRECTION_SHIFT[direction];
-        final long mask = DIRECTION_MASK[direction];
-        return mask & shift(bitboard, n);
     }
 
 
