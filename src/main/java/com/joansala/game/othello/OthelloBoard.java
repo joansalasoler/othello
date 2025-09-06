@@ -215,7 +215,7 @@ public class OthelloBoard extends BaseBoard<long[]> {
      */
     @Override
     public long hash() {
-        int player = (turn == SOUTH) ? SOUTH_STONE : NORTH_STONE;
+        Player player = (turn == SOUTH) ? Player.SOUTH : Player.NORTH;
         return OthelloGame.computeHash(player, position);
     }
 

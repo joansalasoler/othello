@@ -21,6 +21,7 @@ package com.joansala.game.othello;
 import com.joansala.engine.Board;
 import com.joansala.engine.Scorer;
 import com.joansala.engine.base.BaseGame;
+import com.joansala.game.othello.Othello.Player;
 import com.joansala.game.othello.scorers.CornersScorer;
 import com.joansala.util.hash.ZobristHash;
 import static com.joansala.util.bits.Bits.*;
@@ -50,8 +51,11 @@ public class OthelloGame extends BaseGame {
     /** Start position and turn */
     private OthelloBoard board;
 
-    /** Move turns history */
-    private int[] turns;
+    /** Current player color */
+    private Player player;
+
+    /** Current opponent color */
+    private Player rival;
 
     /** Move generation cursors */
     private int[] cursors;
@@ -74,12 +78,6 @@ public class OthelloGame extends BaseGame {
     /** Set when no player can move */
     private boolean stagnant;
 
-    /** Current player color */
-    private int player;
-
-    /** Current opponent color */
-    private int rival;
-
     /** Current move generation cursor */
     private int cursor;
 
@@ -89,7 +87,6 @@ public class OthelloGame extends BaseGame {
      */
     public OthelloGame() {
         super(CAPACITY);
-        turns = new int[CAPACITY];
         cursors = new int[CAPACITY];
         hashes = new long[CAPACITY];
         mobilities = new long[CAPACITY];
@@ -111,6 +108,15 @@ public class OthelloGame extends BaseGame {
      */
     private static ZobristHash hashFunction() {
         return new ZobristHash(RANDOM_SEED, PIECE_COUNT, BOARD_SIZE);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int turn() {
+        return player.turn;
     }
 
 
@@ -141,7 +147,6 @@ public class OthelloGame extends BaseGame {
         this.move = NULL_MOVE;
         this.stagnant = false;
         this.state = board.position();
-
         setTurn(board.turn());
         this.hash = computeHash();
         computeMobility();
@@ -155,15 +160,23 @@ public class OthelloGame extends BaseGame {
      * @param turn      {@code SOUTH} or {@code NORTH}
      */
     protected void setTurn(int turn) {
-        this.turn = turn;
-
         if (turn == SOUTH) {
-            player = SOUTH_STONE;
-            rival = NORTH_STONE;
+            player = Player.SOUTH;
+            rival = Player.NORTH;
         } else {
-            player = NORTH_STONE;
-            rival = SOUTH_STONE;
+            player = Player.NORTH;
+            rival = Player.SOUTH;
         }
+    }
+
+
+    /**
+     * Toggles the player to move.
+     */
+    private void switchTurn() {
+        Player player = this.player;
+        this.player = rival;
+        this.rival = player;
     }
 
 
@@ -294,7 +307,7 @@ public class OthelloGame extends BaseGame {
     public void makeMove(int move) {
         pushState();
         movePieces(move);
-        setTurn(-turn);
+        switchTurn();
         computeMobility();
         this.move = move;
         resetCursor();
@@ -307,6 +320,7 @@ public class OthelloGame extends BaseGame {
     @Override
     public void unmakeMove() {
         popState(index);
+        switchTurn();
         index--;
     }
 
@@ -318,6 +332,7 @@ public class OthelloGame extends BaseGame {
     public void unmakeMoves(int length) {
         if (length > 0) {
             index -= length;
+            setTurn((length & 1) == 0 ? turn() : -turn());
             popState(1 + index);
         }
     }
@@ -355,13 +370,13 @@ public class OthelloGame extends BaseGame {
      */
     private void movePieces(int move) {
         final long checker = bit(move);
-        final long rivals = state[rival];
-        final long players = state[player];
+        final long rivals = state[rival.color];
+        final long players = state[player.color];
 
         // Toggle the hash sign
 
-        hash ^= HASH_SIGN[rival];
-        hash ^= HASH_SIGN[player];
+        hash ^= rival.sign;
+        hash ^= player.sign;
 
         // Player may have forfeit the turn
 
@@ -383,18 +398,18 @@ public class OthelloGame extends BaseGame {
 
         // Update the checkerboards
 
-        state[player] ^= checker;
-        state[player] ^= captures;
-        state[rival] ^= captures;
+        state[player.color] ^= checker;
+        state[player.color] ^= captures;
+        state[rival.color] ^= captures;
 
         // Update the Zobrist hash
 
-        hash = hasher.insert(hash, move, player);
+        hash = hasher.insert(hash, move, player.color);
 
         while (empty(captures) == false) {
             final int index = first(captures);
-            hash = hasher.remove(hash, index, rival);
-            hash = hasher.insert(hash, index, player);
+            hash = hasher.remove(hash, index, rival.color);
+            hash = hasher.insert(hash, index, player.color);
             captures ^= bit(index);
         }
     }
@@ -415,9 +430,9 @@ public class OthelloGame extends BaseGame {
     /**
      * Bitboard of legal moves for the given player.
      */
-    private long computeMobility(int player, int rival) {
-        final long rivals = state[rival];
-        final long players = state[player];
+    private long computeMobility(Player player, Player rival) {
+        final long rivals = state[rival.color];
+        final long players = state[player.color];
         final long free = ~(players | rivals);
 
         long mobility = 0x00L;
@@ -440,7 +455,6 @@ public class OthelloGame extends BaseGame {
         hashes[index] = hash;
         mobilities[index] = mobility;
         cursors[index] = cursor;
-        turns[index] = turn;
         System.arraycopy(state, 0, states, index << 1, PIECE_COUNT);
     }
 
@@ -450,7 +464,6 @@ public class OthelloGame extends BaseGame {
      */
     private void popState(int index) {
         System.arraycopy(states, index << 1, state, 0, PIECE_COUNT);
-        setTurn(turns[index]);
         move = moves[index];
         hash = hashes[index];
         cursor = cursors[index];
@@ -475,8 +488,8 @@ public class OthelloGame extends BaseGame {
      * @param player    Player to move
      * @return          Hash code for the position
      */
-    protected static long computeHash(int player, long[] state) {
-        long hash = HASH_SIGN[player];
+    protected static long computeHash(Player player, long[] state) {
+        long hash = player.sign;
 
         for (int piece = 0; piece < PIECE_COUNT; piece++) {
             long pieces = state[piece];

@@ -1,6 +1,8 @@
 package com.joansala.game.othello;
 
 import java.util.function.LongUnaryOperator;
+
+import com.joansala.engine.Game;
 import com.joansala.util.bits.Bits;
 import static com.joansala.util.bits.Bits.shift;
 
@@ -186,6 +188,31 @@ public final class Othello {
         Bits::transposeXY
     };
 
+    // -------------------------------------------------------------------
+    // Player definitions
+    // -------------------------------------------------------------------
+
+    static class Player {
+        int turn;           // Player turn
+        int color;          // Player color index
+        long sign;          // Player hash sign
+
+        static final Player SOUTH = new Player() {{
+            turn =      Game.SOUTH;
+            color =     SOUTH_STONE;
+            sign =      HASH_SIGN[SOUTH_STONE];
+        }};
+
+        static final Player NORTH = new Player() {{
+            turn =      Game.NORTH;
+            color =     NORTH_STONE;
+            sign =      HASH_SIGN[NORTH_STONE];
+        }};
+    }
+
+    // -------------------------------------------------------------------
+    // Utility methods
+    // -------------------------------------------------------------------
 
     /**
      * Projects a set of pieces on the given direction.
