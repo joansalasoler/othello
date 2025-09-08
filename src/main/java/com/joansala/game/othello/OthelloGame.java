@@ -185,7 +185,7 @@ public class OthelloGame extends BaseGame {
      */
     @Override
     public OthelloBoard getCurrentBoard() {
-        return new OthelloBoard(state, turn);
+        return new OthelloBoard(state, player.turn);
     }
 
 
